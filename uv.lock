@@ -77,7 +77,7 @@ typing = [
 
 [package.metadata]
 requires-dist = [
-    { name = "acgs-lite", specifier = ">=3.0.1,<4" },
+    { name = "acgs-lite", specifier = ">=3.0.1,<5" },
     { name = "ag2", specifier = ">=1.2.0,<2" },
 ]
 
