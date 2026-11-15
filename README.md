@@ -36,11 +36,35 @@ pip install ag2-acgs
 
 Requires Python 3.10 or later, `ag2>=1.2.0,<2` and `acgs-lite>=3.0.1,<5`. Install `ag2[mcp]` to use `MCPToolkit`.
 
+### Compatibility
+
+| Component | Supported range | 0.2.0 validation |
+|---|---|---|
+| acgs-lite | `>=3.0.1,<5` | 4.0.0 tested in the default environment (resolved by `uv.lock`); 3.0.1 floor tested by the CI `test-min` job |
+| AG2 | `>=1.2.0,<2` | Scripted tool calls through agent middleware; minimum dependencies tested by CI `test-min` |
+| Python | `>=3.10` | CI tests Python 3.10–3.14; strict typing targets Python 3.10 |
+
+The adapter formats arguments as text and calls `GovernanceEngine.validate`. It does not select the production
+authorization profile or issue signed receipts. Its public evaluator renders bytes/bytearray as scalar text for
+rule matching; AG2 model tool calls still use JSON arguments.
+
 acgs-lite 4 is a major release. Its production profile of `GovernedCallable` requires an Ed25519
 receipt signer, governed payloads are JSON-only, and `GovernedAgent` no longer passes per-call keyword arguments to
 rule conditions (see the [acgs-lite changelog](https://github.com/acgs-ai/acgs-lite/blob/main/CHANGELOG.md)). This
 adapter works with both majors, but a fresh environment installs the newest version allowed. To stay on 3.x, also
 require `"acgs-lite<4"`, for example `pip install ag2-acgs "acgs-lite<4"`.
+
+### Offline deny-and-audit example
+
+Run [examples/deny_and_audit.py](examples/deny_and_audit.py) without an API key or network access:
+
+```bash
+uv run --no-sync python examples/deny_and_audit.py
+```
+
+AG2's scripted `TestConfig` requests one allowed note and one denied note through `guard.middleware`. Only the
+allowed tool executes, then the example prints both decisions (tool, verdict, reason and rule IDs). This in-memory
+application trail omits argument values; it is not a signed receipt or a durable engine audit log.
 
 ## Usage
 
